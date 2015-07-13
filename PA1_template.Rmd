@@ -7,10 +7,25 @@ output:
 
 
 ## Loading and preprocessing the data
+```{r loaddp, echo=TRUE,results='hide'}
+library('dplyr')
+```
+
+```{r}
+if(!file.exists("./activity.csv")) {
+    unzip("./activity.zip")
+}
+movedata <- read.csv('./activity.csv')
+```
 
 
 
 ## What is mean total number of steps taken per day?
+```{r}
+by_day <- group_by(movedata,date)
+day_totals <- summarise(by_day, total_steps=sum(steps,na.rm=TRUE))
+mean(day_totals$total_steps)
+```
 
 
 
