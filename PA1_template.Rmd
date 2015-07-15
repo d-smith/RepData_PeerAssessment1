@@ -8,7 +8,7 @@ output:
 
 ## Loading and preprocessing the data
 ```{r loaddp, echo=TRUE,results='hide'}
-library('dplyr')
+library('dplyr',quietly=TRUE, verbose=FALSE,warn.conflicts=FALSE)
 ```
 
 ```{r}
@@ -24,13 +24,38 @@ movedata <- read.csv('./activity.csv')
 ```{r}
 by_day <- group_by(movedata,date)
 day_totals <- summarise(by_day, total_steps=sum(steps,na.rm=TRUE))
+```
+
+Histogram - Steps Per Day
+
+```{r echo=TRUE}
+hist(day_totals$total_steps,freq=7,breaks=11, xlab='Total Steps Per Day',ylab='Count',main='Histogram - Total Steps per Day')
+```
+
+Mean Total Steps per Day
+``` {r echo=TRUE}
 mean(day_totals$total_steps)
+```
+
+Median Total Steps Per Day
+``` {r echo=TRUE}
+median(day_totals$total_steps)
 ```
 
 
 
 ## What is the average daily activity pattern?
 
+```{r echo=TRUE}
+by_int <- group_by(movedata,interval)
+interval_avg = summarize(by_int, mean_steps=mean(steps, na.rm=TRUE))
+plot(interval_avg,type='l',xlab='interval',ylab='average steps',main='Average Daily Activity Pattern')
+```
+
+The 5-minute interval, on average across all days in the dataset, with the max number of steps:
+```{r echo=TRUE}
+filter(interval_avg, mean_steps == max(interval_avg$mean_steps))$interval
+```
 
 
 ## Imputing missing values
