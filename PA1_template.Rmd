@@ -60,6 +60,13 @@ filter(interval_avg, mean_steps == max(interval_avg$mean_steps))$interval
 
 ## Imputing missing values
 
+Data set rows with missing values:
+
+```{r echo=TRUE}
+length(subset(movedata,is.na(movedata$steps))$steps)
+```
+
+
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
