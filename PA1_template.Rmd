@@ -66,7 +66,35 @@ Data set rows with missing values:
 length(subset(movedata,is.na(movedata$steps))$steps)
 ```
 
+Replace missing values with the average value for the interval, computed from the non-missing values.
 
+```{r echo=TRUE}
+md2 <- movedata
+for(i in 1:dim(md2)[1]) {
+  if(is.na(md2[i,1])) {
+    imputed <- subset(interval_avg, interval == md2[i,3])[2]
+    md2[i,1] <- imputed
+  }
+}
+```
 
+Histogram - Steps Per Day with Imputed Values
+
+```{r echo=TRUE}
+by_day <- group_by(md2,date)
+day_totals <- summarise(by_day, total_steps=sum(steps,na.rm=TRUE))
+
+hist(day_totals$total_steps,freq=7,breaks=11, xlab='Total Steps Per Day',ylab='Count',main='Histogram - Total Steps per Day')
+```
+
+Mean Total Steps per Day with Imputed Values
+``` {r echo=TRUE}
+mean(day_totals$total_steps)
+```
+
+Median Total Steps Per Day with Imputed Values
+``` {r echo=TRUE}
+median(day_totals$total_steps)
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?
