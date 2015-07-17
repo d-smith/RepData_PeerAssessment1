@@ -107,7 +107,8 @@ md2$date <- ymd(as.character(md2$date))
 md2$dayofweek <- weekdays(md2$date)
 ```
 
-Now we can split out weekend days from week days
+Now we can label days as being weekdays or weekend days, after which we can
+compare weekend activity with weekday activity.
 ```{r echo=TRUE}
 weekday <- function(day) {
   day != "Saturday" & day != "Sunday"
@@ -117,18 +118,22 @@ md2$weekday <- weekday(md2$dayofweek)
 md2$weekday <- factor(md2$weekday, labels=c("weekend","weekday"))
 ```
 
-Weekday activity
+Weekend vs Weekday Activity
 
 ```{r echo=TRUE}
-by_int <- group_by(subset(md2, md2$weekday=="weekday"),interval)
-interval_avg = summarize(by_int, mean_steps=mean(steps, na.rm=TRUE))
-plot(interval_avg,type='l',xlab='interval',ylab='average steps',main='Average Weekday Activity Pattern')
+library('lattice',quietly=TRUE, verbose=FALSE,warn.conflicts=FALSE)
+
+by_int_wd <- group_by(subset(md2, md2$weekday=="weekday"),interval)
+interval_avg_wd = summarize(by_int_wd, mean_steps=mean(steps, na.rm=TRUE))
+interval_avg_wd$weekday <- "weekday" 
+
+by_int_we <- group_by(subset(md2, md2$weekday=="weekend"),interval)
+interval_avg_we = summarize(by_int_we, mean_steps=mean(steps, na.rm=TRUE))
+interval_avg_we$weekday <- "weekend"
+
+combined_interval_avg <- rbind(interval_avg_wd, interval_avg_we)
+with(combined_interval_avg, xyplot(mean_steps ~ interval|weekday,type='l',
+                                   ylab='mean steps',layout=c(1,2)))
 ```
 
-Weekend activity
 
-```{r echo=TRUE}
-by_int <- group_by(subset(md2, md2$weekday=="weekend"),interval)
-interval_avg = summarize(by_int, mean_steps=mean(steps, na.rm=TRUE))
-plot(interval_avg,type='l',xlab='interval',ylab='average steps',main='Average Weekend Activity Pattern')
-```
