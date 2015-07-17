@@ -98,3 +98,37 @@ median(day_totals$total_steps)
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+First we need to determine the day of week associated with each date. Note
+we use the data set we imputed missing values for.
+```{r echo=TRUE}
+library('lubridate',quietly=TRUE, verbose=FALSE,warn.conflicts=FALSE)
+md2$date <- ymd(as.character(md2$date))
+md2$dayofweek <- weekdays(md2$date)
+```
+
+Now we can split out weekend days from week days
+```{r echo=TRUE}
+weekday <- function(day) {
+  day != "Saturday" & day != "Sunday"
+}
+
+md2$weekday <- weekday(md2$dayofweek)
+md2$weekday <- factor(md2$weekday, labels=c("weekend","weekday"))
+```
+
+Weekday activity
+
+```{r echo=TRUE}
+by_int <- group_by(subset(md2, md2$weekday=="weekday"),interval)
+interval_avg = summarize(by_int, mean_steps=mean(steps, na.rm=TRUE))
+plot(interval_avg,type='l',xlab='interval',ylab='average steps',main='Average Weekday Activity Pattern')
+```
+
+Weekend activity
+
+```{r echo=TRUE}
+by_int <- group_by(subset(md2, md2$weekday=="weekend"),interval)
+interval_avg = summarize(by_int, mean_steps=mean(steps, na.rm=TRUE))
+plot(interval_avg,type='l',xlab='interval',ylab='average steps',main='Average Weekend Activity Pattern')
+```
