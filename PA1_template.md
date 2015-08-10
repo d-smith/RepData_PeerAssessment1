@@ -1,17 +1,14 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
-```{r loaddp, echo=TRUE,results='hide'}
+
+```r
 library('dplyr',quietly=TRUE, verbose=FALSE,warn.conflicts=FALSE)
 ```
 
-```{r}
+
+```r
 if(!file.exists("./activity.csv")) {
     unzip("./activity.zip")
 }
@@ -21,40 +18,62 @@ movedata <- read.csv('./activity.csv')
 
 
 ## What is mean total number of steps taken per day?
-```{r}
+
+```r
 by_day <- group_by(movedata,date)
 day_totals <- summarise(by_day, total_steps=sum(steps,na.rm=TRUE))
 ```
 
 Histogram - Steps Per Day
 
-```{r echo=TRUE}
+
+```r
 hist(day_totals$total_steps,freq=7,breaks=11, xlab='Total Steps Per Day',ylab='Count',main='Histogram - Total Steps per Day')
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
 Mean Total Steps per Day
-``` {r echo=TRUE}
+
+```r
 mean(day_totals$total_steps)
 ```
 
+```
+## [1] 9354.23
+```
+
 Median Total Steps Per Day
-``` {r echo=TRUE}
+
+```r
 median(day_totals$total_steps)
+```
+
+```
+## [1] 10395
 ```
 
 
 
 ## What is the average daily activity pattern?
 
-```{r echo=TRUE}
+
+```r
 by_int <- group_by(movedata,interval)
 interval_avg = summarize(by_int, mean_steps=mean(steps, na.rm=TRUE))
 plot(interval_avg,type='l',xlab='interval',ylab='average steps',main='Average Daily Activity Pattern')
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
+
 The 5-minute interval, on average across all days in the dataset, with the max number of steps:
-```{r echo=TRUE}
+
+```r
 filter(interval_avg, mean_steps == max(interval_avg$mean_steps))$interval
+```
+
+```
+## [1] 835
 ```
 
 
@@ -62,13 +81,19 @@ filter(interval_avg, mean_steps == max(interval_avg$mean_steps))$interval
 
 Data set rows with missing values:
 
-```{r echo=TRUE}
+
+```r
 length(subset(movedata,is.na(movedata$steps))$steps)
+```
+
+```
+## [1] 2304
 ```
 
 Replace missing values with the average value for the interval, computed from the non-missing values.
 
-```{r echo=TRUE}
+
+```r
 md2 <- movedata
 for(i in 1:dim(md2)[1]) {
   if(is.na(md2[i,1])) {
@@ -80,28 +105,42 @@ for(i in 1:dim(md2)[1]) {
 
 Histogram - Steps Per Day with Imputed Values
 
-```{r echo=TRUE}
+
+```r
 by_day <- group_by(md2,date)
 day_totals <- summarise(by_day, total_steps=sum(steps,na.rm=TRUE))
 
 hist(day_totals$total_steps,freq=7,breaks=11, xlab='Total Steps Per Day',ylab='Count',main='Histogram - Total Steps per Day')
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png) 
+
 Mean Total Steps per Day with Imputed Values
-``` {r echo=TRUE}
+
+```r
 mean(day_totals$total_steps)
 ```
 
+```
+## [1] 10766.19
+```
+
 Median Total Steps Per Day with Imputed Values
-``` {r echo=TRUE}
+
+```r
 median(day_totals$total_steps)
+```
+
+```
+## [1] 10766.19
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
 First we need to determine the day of week associated with each date. Note
 we use the data set with imputed values as described above.
-```{r echo=TRUE}
+
+```r
 library('lubridate',quietly=TRUE, verbose=FALSE,warn.conflicts=FALSE)
 md2$date <- ymd(as.character(md2$date))
 md2$dayofweek <- weekdays(md2$date)
@@ -109,7 +148,8 @@ md2$dayofweek <- weekdays(md2$date)
 
 Now we can label days as being weekdays or weekend days, after which we can
 compare weekend activity with weekday activity.
-```{r echo=TRUE}
+
+```r
 weekday <- function(day) {
   day != "Saturday" & day != "Sunday"
 }
@@ -120,7 +160,8 @@ md2$weekday <- factor(md2$weekday, labels=c("weekend","weekday"))
 
 Weekend vs Weekday Activity
 
-```{r echo=TRUE}
+
+```r
 library('lattice',quietly=TRUE, verbose=FALSE,warn.conflicts=FALSE)
 
 by_int_wd <- group_by(subset(md2, md2$weekday=="weekday"),interval)
@@ -135,5 +176,7 @@ combined_interval_avg <- rbind(interval_avg_wd, interval_avg_we)
 with(combined_interval_avg, xyplot(mean_steps ~ interval|weekday,type='l',
                                    ylab='mean steps',layout=c(1,2)))
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-15-1.png) 
 
 
