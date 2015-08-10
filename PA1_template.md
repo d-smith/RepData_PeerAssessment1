@@ -1,4 +1,9 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
 
 
 ## Loading and preprocessing the data
@@ -31,7 +36,7 @@ Histogram - Steps Per Day
 hist(day_totals$total_steps,freq=7,breaks=11, xlab='Total Steps Per Day',ylab='Count',main='Histogram - Total Steps per Day')
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+![plot of chunk steps_per_day_histogram](figure/steps_per_day_histogram-1.png) 
 
 Mean Total Steps per Day
 
@@ -64,7 +69,7 @@ interval_avg = summarize(by_int, mean_steps=mean(steps, na.rm=TRUE))
 plot(interval_avg,type='l',xlab='interval',ylab='average steps',main='Average Daily Activity Pattern')
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
+![plot of chunk avg_daily_activity_pattern](figure/avg_daily_activity_pattern-1.png) 
 
 The 5-minute interval, on average across all days in the dataset, with the max number of steps:
 
@@ -110,10 +115,10 @@ Histogram - Steps Per Day with Imputed Values
 by_day <- group_by(md2,date)
 day_totals <- summarise(by_day, total_steps=sum(steps,na.rm=TRUE))
 
-hist(day_totals$total_steps,freq=7,breaks=11, xlab='Total Steps Per Day',ylab='Count',main='Histogram - Total Steps per Day')
+hist(day_totals$total_steps,freq=7,breaks=11, xlab='Total Steps Per Day',ylab='Count',main='Histogram - Total Steps per Day (Imputed Data')
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-10-1.png) 
+![plot of chunk steps_per_day_imputed_hist](figure/steps_per_day_imputed_hist-1.png) 
 
 Mean Total Steps per Day with Imputed Values
 
@@ -177,6 +182,6 @@ with(combined_interval_avg, xyplot(mean_steps ~ interval|weekday,type='l',
                                    ylab='mean steps',layout=c(1,2)))
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-15-1.png) 
+![plot of chunk weekend_vs_weekday](figure/weekend_vs_weekday-1.png) 
 
 

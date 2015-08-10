@@ -28,7 +28,7 @@ day_totals <- summarise(by_day, total_steps=sum(steps,na.rm=TRUE))
 
 Histogram - Steps Per Day
 
-```{r echo=TRUE}
+```{r steps_per_day_histogram,echo=TRUE}
 hist(day_totals$total_steps,freq=7,breaks=11, xlab='Total Steps Per Day',ylab='Count',main='Histogram - Total Steps per Day')
 ```
 
@@ -46,7 +46,7 @@ median(day_totals$total_steps)
 
 ## What is the average daily activity pattern?
 
-```{r echo=TRUE}
+```{r avg_daily_activity_pattern,echo=TRUE}
 by_int <- group_by(movedata,interval)
 interval_avg = summarize(by_int, mean_steps=mean(steps, na.rm=TRUE))
 plot(interval_avg,type='l',xlab='interval',ylab='average steps',main='Average Daily Activity Pattern')
@@ -80,11 +80,11 @@ for(i in 1:dim(md2)[1]) {
 
 Histogram - Steps Per Day with Imputed Values
 
-```{r echo=TRUE}
+```{r steps_per_day_imputed_hist,echo=TRUE}
 by_day <- group_by(md2,date)
 day_totals <- summarise(by_day, total_steps=sum(steps,na.rm=TRUE))
 
-hist(day_totals$total_steps,freq=7,breaks=11, xlab='Total Steps Per Day',ylab='Count',main='Histogram - Total Steps per Day')
+hist(day_totals$total_steps,freq=7,breaks=11, xlab='Total Steps Per Day',ylab='Count',main='Histogram - Total Steps per Day (Imputed Data')
 ```
 
 Mean Total Steps per Day with Imputed Values
@@ -120,7 +120,7 @@ md2$weekday <- factor(md2$weekday, labels=c("weekend","weekday"))
 
 Weekend vs Weekday Activity
 
-```{r echo=TRUE}
+```{r weekend_vs_weekday,echo=TRUE}
 library('lattice',quietly=TRUE, verbose=FALSE,warn.conflicts=FALSE)
 
 by_int_wd <- group_by(subset(md2, md2$weekday=="weekday"),interval)
